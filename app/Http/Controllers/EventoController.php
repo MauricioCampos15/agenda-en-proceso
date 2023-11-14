@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Evento;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class EventoController extends Controller
 {
@@ -12,7 +13,7 @@ class EventoController extends Controller
      */
     public function index()
     {
-        return view('evento.index');
+        return view('evento.index'); 
     }
 
     /**
@@ -28,7 +29,8 @@ class EventoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        request()->validate(Evento::$rules);
+        $evento=Evento::create($request->all());
     }
 
     /**
@@ -36,15 +38,24 @@ class EventoController extends Controller
      */
     public function show(Evento $evento)
     {
-        //
+        $evento = Evento::all();
+        return response()->json($evento);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Evento $evento)
+    public function edit($id)
     {
-        //
+        $evento= Evento::find($id);
+
+        $evento->start =Carbon::createFromFormat('Y-m-d H:i:s', $evento->start)->format('Y-m-d');
+
+        $evento->end =Carbon::createFromFormat('Y-m-d H:i:s', $evento->end)->format('Y-m-d');
+
+
+        return response()->json($evento);
+
     }
 
     /**
